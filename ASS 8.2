@@ -1,0 +1,62 @@
+Explain the core changes made in Hadoop 2.x
+
+1. Resource Utilization is taken care by ResourceManager and NodeManager, whereas job monitoring is taken care by ApplicationMaster whereas in hadoop 1.x the jobTracker keeps track of resource utilization and job monitoring.
+
+2. Hadoop 2.x can scale up to 10000 nodes and 100000 tasks whereas Hadoop 1.x can handle a maximum of 4000 nodes and 40000 tasks.
+
+3. Resources are dynamic and finegrained.Thus better cluster utilization in Hadoop 2.x
+
+4. Hadoop 2.x Supports processing models other than Map Reduce whereas Hadoop 1.x supports only Mapreduce model.
+
+5.Hadoop 2.x Works on concepts of containers.containers can run generic tasks whereas Hadoop 1.x Works on concepts of slots – slots can run either a Map task or a Reduce task only.
+
+6.Hadoop 2.x has Multiple Namenode servers which manages multiple namespaces whereas Hadoop 1.x has only a single Namenode to manage the entire namespace.
+
+7.Hadoop 1.x has Single-Point-of-Failure (SPOF) – because of single Namenode- and in case of Namenode failure, needs manual intervention to overcome. whereas Hadoop 2.x has a feature to overcome SPOF with a standby Namenode and in case of Namenode failure, it is configured for automatic recovery.
+
+8.A namenode failure affects the task in Hadoop 1.x whereas in Hadoop 2.x the Hadoop stack – Hive, Pig, HBase etc. are all equipped to handle Namenode failure.
+
+9.Hadoop 1.x doesn't support Microsoft windows whereas Hadoop 2.x supports Microsoft Windows.
+
+
+Explain the difference between MapReduce 1 and MapReduce 2 / Yarn:
+MAPREDUCE 1:
+
+* MapReduce is a Distributed Data Processing or Batch Processing Programming Model. Like HDFS, MapReduce component also uses Commodity Hardware to process “High Volume of Variety of Data at High Velocity Rate” in a reliable and fault-tolerant manner.
+
+MapReduce component is again divided into two sub-components:
+
+* Job Tracker
+1) Job Tracker is used to assign MapReduce Tasks to Task Trackers in the Cluster of Nodes. Sometimes, it reassigns same tasks to other Task Trackers as previous Task Trackers are failed or shutdown scenarios.
+2)Job Tracker maintains all the Task Trackers status like Up/running, Failed, Recovered etc.
+
+* Task Tracker
+1) Task Tracker executes the Tasks which are assigned by Job Tracker and sends the status of those tasks to Job Tracker.
+
+working:
+* Clients (one or more) submit their work to Hadoop System.
+* When Hadoop System receives a Client Request, first it is received by a Master Node.
+Master Node’s MapReduce component “Job Tracker” is responsible for receiving Client Work and divides into manageable independent Tasks and assign them to Task Trackers.
+* Slave Node’s MapReduce component “Task Tracker” receives those Tasks from “Job Tracker” and perform those tasks by using MapReduce components.
+* Once all Task Trackers finished their job, Job Tracker takes those results and combines them into final result.
+Finally Hadoop System will send that final result to the Client.
+
+
+ Hadoop can scale up to 4,000 nodes. When it exceeds that limit, it raises unpredictable behavior such as cascading failures and serious deterioration of overall cluster. Another issue being multi-tenancy – it is impossible to run other frameworks than MapReduce 1.0 on a Hadoop cluster.
+
+
+MAPREDUCE 2/YARN:
+MapReduce 2 component is again divided into two sub-components:
+
+* JOB TRACKER:
+In MapReduce 2.0, the JobTracker is divided into three services:
+
+* ResourceManager, a persistent YARN service that receives and runs applications on the cluster.  A MapReduce job is an application.
+* JobHistoryServer, to provide information about completed jobs
+* Application Master, to manage each MapReduce job and is terminated when the job completes.
+
+* TASK TRACKER:
+Also, the TaskTracker has been replaced with the NodeManager, a YARN service that manages resources and deployment on a node. NodeManager is responsible for launching containers that could either be a map or reduce task.
+
+This new architecture breaks JobTracker model by allowing a new ResourceManager to manage resource usage across applications, with ApplicationMasters taking the responsibility of managing the execution of jobs. This change removes a bottleneck and let Hadoop clusters scale up to larger configurations than 4000 nodes. This architecture also allows simultaneous execution of a variety of programming models such as graph processing, iterative processing, machine learning, and general cluster computing, including the traditional MapReduce.
+        
